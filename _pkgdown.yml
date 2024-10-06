@@ -16,7 +16,7 @@ navbar:
       href: reference/index.html
     github:
       icon: fab fa-github fa-lg
-      href: https://github.com/zsiders/EnsembleRandomForests/
+      href: https://github.com/zsiders/BayesianBombCarbon/
     articles:
       text: Vignettes
       menu:
