@@ -1,9 +1,5 @@
 url: https://zsiders.github.io/BayesianBombCarbon/
 
-template:
-  bootstrap: 5
-  bootswatch: quartz
-
 navbar:
   structure:
     left:
