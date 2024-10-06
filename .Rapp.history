@@ -1,0 +1,496 @@
+rm(list=c('data_prep'))
+load_all()
+df_int <- data_prep(sim_ref, sim_unk)
+sim_ref
+head(sim_ref)
+any(is.na(df_ref[,c('BY','C14')]))
+v <- list(flag = NULL, data = NULL)
+v$data <- list(BY_mu <- mean(df_ref$BY)) #mean birth year
+v
+load_all()
+df_int <- data_prep(sim_ref, sim_unk)
+df_int
+head(sim_unk)
+load_all()
+df_int <- data_prep(sim_ref, sim_unk)
+df_int
+v <- list(flag = NULL, data = NULL)
+v$data <- list(BY_mu = mean(df_ref$BY)) #mean birth year
+v
+pred_seq <- seq(pred.by$min.by,pred.by$max.by,pred.by$inc.by) #predicted sequence
+pred_seq <- seq(floor(min(df_ref$BY)),ceiling(max(df_ref$BY)),by=1)
+v$data <- c(v$data,list(Nref = nrow(df_ref), #number of observations#
+             BY_ref = df_ref$BY-v$data$BY_mu, #mean-centered formation year#
+             C14_ref = df_ref$C14, #∆14C reference values#
+             Np = length(pred_seq), #length of prediction series#
+             BY_pred = pred_seq-v$data$BY_mu)) #mean-centered
+v
+load_all()
+df_int <- data_prep(sim_ref, sim_unk)
+df_int
+fit_int <- est_model(df_int, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)
+?save_output
+?cmdstan
+??cmdstan
+fit_int$save_object("/Users/zach/Dropbox/Projects/BayesianBombCarbon/data/")
+fit_int$save_object(file="/Users/zach/Dropbox/Projects/BayesianBombCarbon/data/")
+?save_object
+temp_rds_file <- tempfile(tmpdir = "/Users/zach/Dropbox/Projects/BayesianBombCarbon/data/", fileext = ".rda")
+fit_int$save_object(file=temp_rds_file)
+fit_int
+fit <- est_model(df, iter_warmup = 3000, iter_sampling = 500, parallel_chains = 4)
+fit
+est_model <- function(data, save_dir, ...){#
+    if(data$flag == 'reference-only'){#
+        mod <- get_stan_model('ref-only')#
+    }else if(data$flag == 'integrated'){#
+        mod <- get_stan_model('integrated')#
+    }#
+    fitting_successful <- FALSE#
+    bspline_fit <- mod$load_model[[1]]()#
+    res <- tryCatch(#
+        {#
+          res <- stanmodel_instance$sample(data = data$data,...)#
+          if(length(res$warnings) == 0) {#
+            fitting_successful <- TRUE#
+            res <- res$value#
+          }else{#
+            cat("\n")#
+            cli::cli_warn(#
+              paste(#
+                "There was an error while fitting the model.",#
+                "Only the model input is returned."#
+              )#
+            )#
+            res <- list(#
+              errors = unlist(lapply(#
+                res$warnings, function(x) stringr::str_remove(x$message, "\n")#
+              )),#
+              sampler_output = res$value$output()#
+            )#
+          }#
+          res#
+        },#
+        error = function(err) {#
+          cat("\n")#
+          cli::cli_warn(c(#
+            paste(#
+              "There was an error while fitting the model.",#
+              "Only the model input is returned."#
+            ),#
+            err$message#
+          ))#
+          return(list(errors = err, sampler_output = NULL))#
+        }#
+    )#
+    if(fitting_successful){#
+        bspline_fit$fitted <- res#
+    }#
+    if(!missing(save_dir) & fitting_successful){#
+        bspline_fit$save_output_files(dir=save_dir)#
+    }#
+    return(bspline_fit)#
+}
+rm(est_model)
+load_all()
+fit <- est_model(df, iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)
+load_all()
+fit <- est_model(df, iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)
+fit
+name(fit)
+names(fit)
+load_all()
+fit <- est_model(df, iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)
+fit
+data= df
+if(data$flag == 'reference-only'){#
+        mod <- get_stan_model('ref-only')#
+    }else if(data$flag == 'integrated'){#
+        mod <- get_stan_model('integrated')#
+    }
+fitting_successful <- FALSE
+bspline_fit <- list()
+fit <- tryCatch(#
+        {#
+          fit <- bspline_fit$model$sample(data = data$data,iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)#
+          if(length(fit$warnings) == 0) {#
+            fitting_successful <- TRUE#
+            fit <- fit$value#
+          }else{#
+            cat("\n")#
+            cli::cli_warn(#
+              paste(#
+                "There was an error while fitting the model.",#
+                "Only the model input is returned."#
+              )#
+            )#
+            fit <- list(#
+              errors = unlist(lapply(#
+                fit$warnings, function(x) stringr::str_remove(x$message, "\n")#
+              )),#
+              sampler_output = fit$value$output()#
+            )#
+          }#
+          fit#
+        },#
+        error = function(err) {#
+          cat("\n")#
+          cli::cli_warn(c(#
+            paste(#
+              "There was an error while fitting the model.",#
+              "Only the model input is returned."#
+            ),#
+            err$message#
+          ))#
+          return(list(errors = err, sampler_output = NULL))#
+        }#
+    )
+bspline_fit$model <- mod$load_model[[1]]()
+fit <- tryCatch(#
+        {#
+          fit <- bspline_fit$model$sample(data = data$data,iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)#
+          if(length(fit$warnings) == 0) {#
+            fitting_successful <- TRUE#
+            fit <- fit$value#
+          }else{#
+            cat("\n")#
+            cli::cli_warn(#
+              paste(#
+                "There was an error while fitting the model.",#
+                "Only the model input is returned."#
+              )#
+            )#
+            fit <- list(#
+              errors = unlist(lapply(#
+                fit$warnings, function(x) stringr::str_remove(x$message, "\n")#
+              )),#
+              sampler_output = fit$value$output()#
+            )#
+          }#
+          fit#
+        },#
+        error = function(err) {#
+          cat("\n")#
+          cli::cli_warn(c(#
+            paste(#
+              "There was an error while fitting the model.",#
+              "Only the model input is returned."#
+            ),#
+            err$message#
+          ))#
+          return(list(errors = err, sampler_output = NULL))#
+        }#
+    )
+fit
+fit <- bspline_fit$model$sample(data = data$data,iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)
+length(fit$warnings) == 0
+fitting_successful <- TRUE
+fit$value
+names(fit)
+load_all()
+fit <- est_model(df, iter_warmup = 1000, iter_sampling = 500, parallel_chains = 4)
+fit
+fit$fitted$save_object(temp_rds_file)
+loadRDS("file128517597b93f.rda")
+fit2 <- readRDS("/Users/zach/Dropbox/Projects/BayesianBombCarbon/data/file128517597b93f.rda")
+fit2
+fit2$summary()
+extract_draws(fit2)
+ext <- extract_draws(fit2)
+plot_fit(df_int, ext)
+plot_fit(df, ext)
+df$flag
+probs=c(0.05,0.5,0.95)
+post.den=TRUE
+legend=TRUE
+bias_flag <- df$flag == 'integrated'#
+    pred.q <- apply(ext$C14_pred, 2, quantile, probs=probs)#
+    if(bias_flag) obs.q <- apply(ext$BY_adj, 2, quantile, probs=probs)+df$BY_mu#
+    df$data$BY_ref_bck <- df$data$BY_ref+df$data$BY_mu#
+    if(bias_flag) df$data$BY_obs_bck <- df$data$BY_obs+df$data$BY_mu#
+    df$data$BY_pred_bck <- df$data$BY_pred + df$data$BY_mu#
+    if(bias_flag){#
+        BY.r <- range(c(df$data$BY_ref_bck, df$data$BY_obs_bck))#
+    }else{#
+        BY.r <- range(c(df$data$BY_ref_bck))#
+    }#
+    C14.r <- range(df$data$C14_ref)#
+    BY.dr <- abs(diff(BY.r))#
+    C14.dr <- abs(diff(C14.r))
+bias_flag
+df$data$BY_ref_bck
+df$data$BY_mu
+df <- data_prep(sim_ref)
+sim_ref
+df
+plot_fit(df,ext)
+load_all()
+?suppressMessages
+load_all()
+plot_fit(df,ext)
+load_all()
+plot_fit(df,ext)
+plot_fit(df,ext,min.BY=1930)
+plot_fit(df,ext,min.BY=1920)
+plot_fit(df,ext,min.BY=1900)
+df <- data_prep(sim_ref, pad.spline = 0.1)
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)
+ext <- extract_draws(fit$fitted)
+plot_fit(df, ext)
+df$data$BY_pred_bck[which.max(pred.q[2,])]
+bias_flag <- df$flag == 'integrated'#
+    pred.q <- apply(ext$C14_pred, 2, quantile, probs=probs)#
+    if(bias_flag) obs.q <- apply(ext$BY_adj, 2, quantile, probs=probs)+df$BY_mu#
+    df$data$BY_ref_bck <- df$data$BY_ref+df$data$BY_mu#
+    if(bias_flag) df$data$BY_obs_bck <- df$data$BY_obs+df$data$BY_mu#
+    df$data$BY_pred_bck <- df$data$BY_pred + df$data$BY_mu#
+    if(bias_flag){#
+        BY.r <- range(c(df$data$BY_ref_bck, df$data$BY_obs_bck))#
+    }else{#
+        BY.r <- range(c(df$data$BY_ref_bck))#
+    }
+BY.r
+df$data$BY_pred_bck[which.max(pred.q[2,])]
+par('usr')
+peak/par('usr')[2]
+peak <- df$data$BY_pred_bck[which.max(pred.q[2,])]
+peak
+peak/par('usr')[2]
+par('usr')[2]
+peak
+par('usr')[2]/peak
+par('usr')[2]
+peak
+par('usr')[2]-peak
+diff(par('usr')[1:2])
+(par('usr')[2]-peak)/diff(par('usr')[1:2])
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+2020-1900
+0.35/120
+0.35/120 * 120
+0.003
+0.003 * 120
+load_all()
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1)
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)
+ext <- extract_draws(fit$fitted)
+plot_fit(df, ext)
+?data_prep
+df <- data_prep(sim_ref, pad.spline = 1, pred.by = list(min.by = 1900, max.by = 2024, inc.by=1))
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)
+ext <- extract_draws(fit$fitted)
+plot_fit(df, ext)
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1, pred.by = list(min.by = 1900, max.by = 2021, inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 10, pred.by = list(min.by = 1900, max.by = 2021, inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 0.01, pred.by = list(min.by = 1900, max.by = 2021, inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1, pred.by = list(min.by = 1940, max.by = 2021, inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+load_all()
+df <- data_prep(sim_ref, pad.spline = 1, pred.by = list(min.by = 1940, max.by = 2021, inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1, #
+                knot.adj = 6,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1, #
+                spline.degree = 1,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+load_all()
+df <- data_prep(sim_ref, pad.spline = 1, #
+                fixed.knot = 12.1,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))
+df
+dBY <- diff(range(df$data$BY_ref))
+dBY
+dBY * - 0.01
+dBY * - 0.01 + min(df$data$BY_ref)
+min(df$data$BY_ref)
+dBY * -10 + min(df$data$BY_ref)
+load_all()
+df <- data_prep(sim_ref, pad.spline = 1, #
+                fixed.knot = 12,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 1, #
+                fixed.knot = 4,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 0.1, #
+                fixed.knot = 4L,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+df <- data_prep(sim_ref, pad.spline = 0.1, #
+                fixed.knot = 12L,#
+                pred.by = list(min.by = 1940, #
+                               max.by = 2021, #
+                               inc.by=1))#
+#
+fit <- est_model(df, parallel_chains = 4, iter_warmup=1000, iter_sampling = 250)#
+#
+ext <- extract_draws(fit$fitted)#
+#
+plot_fit(df, ext)
+?sample
+df <- data_prep(sim_ref, sim_unk)
+load_all()
+load_all()
+df <- data_prep(sim_ref, sim_unk)
+df
+fit <- est_model(df, parallel_chains = 4, #
+                 iter_warmup=1000, #
+                 iter_sampling = 250)
+ext <- extract_draws(fit$fitted)
+load_all()
+ext <- extract_draws(fit$fitted)
+fit$mode
+fit$model
+fit$fitted
+attributes(fit$fitted)
+atr(fit$fitted)
+attr(fit$fitted)
+str(fit$fitted)
+fit$fitted$data_file()
+load_all()
+load_all()
+ext <- extract_draws(fit$fitted, df)
+ext <- extract_draws(fit, df)
+df$data$Nobs
+nrow(bspline_ext$adj)
+load_all()
+ext <- extract_draws(fit, df)
+ext
+str(ext)
+plot_fit(df, ext)
+probs
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+c(expression(sigma[REF]),#
+                   expression(sigma[OBS]))
+expression(paste0(sigma[REF],sigma[OBS]))
+expression(paste(sigma[REF],sigma[OBS]))
+load_all()
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+load_all()
+plot_fit(df, ext)
+plot_fit(df, ext)
+load_all()
+document()
+usethis::use_tidy_description()
+run_examples()
+pkgdown::build_site()
+?sample
+load_all()
+document()
+pkgdown::build_site()
+load_all()
+# update NAMESPACE
+document()
+usethis::use_tidy_description()
+pkgdown::build_site()
+pkgdown::build_site()
+head(sim_ref)
+?cmdstanr::sample
+?summary
+library(bayestestR)
