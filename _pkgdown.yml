@@ -1,0 +1,28 @@
+url: https://zsiders.github.io/BayesianBombCarbon/
+
+template:
+  bootstrap: 5
+  bootswatch: quartz
+
+navbar:
+  structure:
+    left:
+    - home
+    - articles
+    - reference
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/zsiders/EnsembleRandomForests/
+    articles:
+      text: Vignettes
+      menu:
+      - text: Getting started with BayesianBombCarbon
+        href: articles/basic-workflow.html
