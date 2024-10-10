@@ -11,4 +11,4 @@ inst/stan/*
 !inst/stan/*.*
 !inst/stan/functions/
 !inst/stan/functions/*.*
-docs
+
