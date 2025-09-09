@@ -6,6 +6,7 @@
 \usage{
 get_stan_model(
   model_name = NULL,
+  model_flag = NULL,
   model_filename = NULL,
   model_folder = "stan",
   profile = TRUE,

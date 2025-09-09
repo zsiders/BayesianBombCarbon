@@ -1,42 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/404.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/articles/basic-workflow.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/index.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/bombcarbon_compile.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/data_prep.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/est_model.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/extract_draws.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/get_stan_model.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://zsiders.github.io/BayesianBombCarbon/reference/plot_fit.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/404.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/LICENSE.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/articles/basic-workflow.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/articles/index.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/authors.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/index.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/bombcarbon_compile.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/data_prep.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/est_model.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/extract_draws.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/get_stan_model.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/index.html</loc></url>
+<url><loc>https://zsiders.github.io/BayesianBombCarbon/reference/plot_fit.html</loc></url>
 </urlset>
+

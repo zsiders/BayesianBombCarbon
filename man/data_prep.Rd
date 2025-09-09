@@ -7,13 +7,11 @@
 data_prep(
   df_ref,
   df_unk,
-  knot.min = 10,
-  knot.adj = 4,
-  fixed.knot,
-  spline.degree = 3,
-  pad.spline = 0.01,
+  model = "bspline",
   ll_wt = 5,
-  pred.by = list(min.by = 1940, max.by = 2020, inc.by = 1)
+  pred.by = list(min.by = 1940, max.by = 2020, inc.by = 1),
+  bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot = NULL, spline.degree =
+    3, pad.spline = 0.01)
 )
 }
 \arguments{
@@ -21,19 +19,13 @@ data_prep(
 
 \item{df_unk}{a data.frame with two named columns for samples with unknown true birth year; 1) BY - vector of estimated formation (birth) years; 2) C14 - vector of ∆14C values of the samples}
 
-\item{knot.min}{minimum number of knots, default is 10.}
-
-\item{knot.adj}{divisor of the number of observations to set the number of knots, set a default of 4 with number of knots = nrow(df_ref)/knot.adj. Increasing this value decreases the number of knots (more smoothing in the spline).}
-
-\item{fixed.knot}{(optional) set number of knots that overrides number of knots = nrow(df_ref)/knot.adj. Must be a integer followed by L to be considered.}
-
-\item{spline.degree}{degree of polynomial spline, set at a default of 3. Must be 0 or greater.}
-
-\item{pad.spline}{amount of years to pad spline knot locations, default is 0.01}
+\item{model}{\link{character} of 'exponential','linear','bspline'; defaults to bspline}
 
 \item{ll_wt}{weighting value of the reference series relative to the sample values for the integrated method, default is 5 (tested to be sufficient unless there is many samples).}
 
 \item{pred.by}{a vector of formation years or a named list object for predicting the reference series ∆14C at. The named list needs: min.by = start year of prediction sequence, max.by = end year of prediction sequence, inc.by = year increment of the prediction sequence.}
+
+\item{bspline.control}{a named list of B-spline control parameters (see Details)}
 }
 \value{
 A named list object containing:
@@ -44,6 +36,15 @@ A named list object containing:
 }
 \description{
 Forces a standardized format for inputting bomb radidocarbon data into a list object for estimating with 'cmdstanr'
+}
+\details{
+\itemize{
+\item \strong{knot.min}  minimum number of knots, default is 10.
+\item \strong{knot.adj} divisor of the number of observations to set the number of knots, set a default of 4 with number of knots = nrow(df_ref)/knot.adj. Increasing this value decreases the number of knots (more smoothing in the spline).
+\item \strong{fixed.knot} (optional) set number of knots that overrides number of knots = nrow(df_ref)/knot.adj. Must be a integer followed by L to be considered.
+\item \strong{spline.degree} degree of polynomial spline, set at a default of 3. Must be 0 or greater.
+\item \strong{pad.spline} amount of years to pad spline knot locations, default is 0.01
+}
 }
 \examples{
 #default BY_pred, reference only

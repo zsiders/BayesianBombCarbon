@@ -57,32 +57,32 @@ parameters {
 }
 transformed parameters {
 	row_vector[num_basis] a;
-	vector[Nref] C14_hat;
+	vector[Nref] C14_ref_hat;
 	a[1] = a_raw[1];
 	for (i in 2:num_basis){
 		a[i] = a[i-1] + a_raw[i]*tau; 
 	}
-	C14_hat = a0*to_vector(BY_ref) + to_vector(a*B);
+	C14_ref_hat = a0*to_vector(BY_ref) + to_vector(a*B);
 }
 model {
 	// Priors
-	a_raw ~ normal(0, 1);
-	a0 ~ normal(0, 1);
-	tau ~ normal(0, 1);
-	sigma_ref ~ normal(0, 1);
+	a_raw ~ std_normal();
+	a0 ~ std_normal();
+	tau ~ std_normal();
+	sigma_ref ~ std_normal();
 
 	//Likelihood
-	C14_ref ~ normal(C14_hat, sigma_ref);
+	C14_ref ~ normal(C14_ref_hat, sigma_ref);
 }
 generated quantities{
-	vector[Nref] log_lik;
+	vector[Nref] log_lik_ref;
 	vector[Np] C14_pred;
 	vector[Np] C14_pred_hat;
 	matrix[num_basis, Np] B_pred;  // matrix of B-splines
 
 	//likelihood
 	for(ii in 1:Nref){
-		log_lik[ii] = normal_lpdf(C14_ref[ii]|C14_hat[ii],sigma_ref);
+		log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
 	}
 
 	//predictions

@@ -67,6 +67,18 @@ transformed parameters {
 	for (i in 2:num_basis){
 		a[i] = a[i-1] + a_raw[i]*tau; 
 	}
+	vector[Nref] C14_ref_hat; //predicted reference
+	vector[Nobs] C14_obs_hat;  //predicted observations
+	array[Nobs] real BY_adj; //repeated adjustment
+	matrix[num_basis, Nobs] B_obs;  // matrix of B-splines
+	C14_ref_hat = a0*to_vector(BY_ref) + to_vector(a*B); //predict C14 of reference
+	BY_adj = to_array_1d(to_vector(BY_obs) + rep_vector(adj,Nobs)); //adjusted birth year of the observations
+	//build the spline
+	for (ii in 1:num_basis){
+		B_obs[ii,:] = to_row_vector(build_b_spline(BY_adj, to_array_1d(ext_knots), ii, spline_degree + 1));
+	}
+	B_obs[num_basis, Nobs] = 1;
+	C14_obs_hat = a0*to_vector(BY_adj) + to_vector(a*B_obs); //predict C14 of observations
 }
 model {
 	// Priors
@@ -77,25 +89,12 @@ model {
 	sigma_obs ~ std_normal();
 
 	//local calc
-	{
-		vector[Nref] C14_hat; //predicted reference
-		vector[Nobs] C14_obs_hat;  //predicted observations
-		array[Nobs] real BY_adj; //repeated adjustment
-		matrix[num_basis, Nobs] B_obs;  // matrix of B-splines
-		C14_hat = a0*to_vector(BY_ref) + to_vector(a*B); //predict C14 of reference
-		BY_adj = to_array_1d(to_vector(BY_obs) + rep_vector(adj,Nobs)); //adjusted birth year of the observations
-		//build the spline
-		for (ii in 1:num_basis){
-			B_obs[ii,:] = to_row_vector(build_b_spline(BY_adj, to_array_1d(ext_knots), ii, spline_degree + 1));
-		}
-		B_obs[num_basis, Nobs] = 1;
-		C14_obs_hat = a0*to_vector(BY_adj) + to_vector(a*B_obs); //predict C14 of observations
-		//Likelihood
-		target += normal_lpdf(C14_ref|C14_hat, sigma_ref)*wt; //reference
-		target += normal_lpdf(C14_obs|C14_obs_hat, sigma_obs); //observations
-	}
+	target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference
+	target += normal_lpdf(C14_obs|C14_obs_hat, sigma_obs); //observations
 }
 generated quantities{
+	vector[Nref] log_lik_ref;
+	vector[Nobs] log_lik_obs;
 	vector[Np] C14_pred; //predicted C14 including variablity
 	vector[Np] C14_pred_hat; //predicted mean C14
 	{
@@ -107,7 +106,13 @@ generated quantities{
 		B_pred[Nk + spline_degree - 1, Np] = 1; 
 		C14_pred_hat = a0*to_vector(BY_pred) + to_vector(a*B_pred);
 	}
-	
+	//likelihood
+	for(ii in 1:Nref){
+		log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
+	}
+	for(ii in 1:Nobs){
+		log_lik_obs[ii] = normal_lpdf(C14_obs[ii]|C14_obs_hat[ii],sigma_ref);
+	}
 	for(i in 1:Np){
 		C14_pred[i] = normal_rng(C14_pred_hat[i], sigma_ref);
 	}

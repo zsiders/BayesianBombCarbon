@@ -169,12 +169,12 @@ plot_fit(df = df_int, ext = ext_int)
 ```
 <div class="figure" style="text-align: center">
 <img src="img/plot_unk_viz.png" alt="plot of chunk plot_unk_viz"  />
-<p class="caption">plot of chunk plot_unk_viz</p>
+<p class="caption">Visualization of reference function fit, adjusted unvalidated samples, and posterior distributions</p>
 </div>
 
 Note that additional features are plotted. The original unvalidated formation/birth years are shown in the red circles while the adjusted formation/birth years, along with their credible interval, are shown in the red ticks. Additional, the posterior densities of the aging bias/adjustment is provided. A vertical, dashed red segment will highlight zero if the posterior overlaps or is adjacent to zero. This provides a visual equivalent of the hypothesis test conducted earlier.
 
 ## Future work
-`BayesianBombCarbon` is under development though the core functionality will remain mostly unchanged in the future. Additional models will be provided, such as the coupled function from Kastelle et al. (2011), that will have the reference series only and integrated method capabilities. General improvements have also been made to the sum of squares aging bias estimation approach, first presented in Kastelle et al. (2008), that will supported soon. If you have suggestions/requests/bugs, please reach out to zsiders@ufl.edu. 
+`BayesianBombCarbon` is under development though the core functionality will remain mostly unchanged in the future. Additional models will be provided, such as the coupled function from Kastelle et al. (2011), that will have the reference series only and integrated method capabilities. General improvements have also been made to the sum of squares aging bias estimation approach, first presented in Kastelle et al. (2008), that will be supported soon. If you have suggestions/requests/bugs, please reach out to zsiders@ufl.edu. 
 
 

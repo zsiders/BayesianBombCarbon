@@ -55,6 +55,29 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 		BY.r[2] <- max.BY
 	}
 
+	
+
+	
+	C14.r <- range(c(df$data$C14_ref, df$data$C14_obs))
+	
+	BY.dr <- abs(diff(BY.r))
+	C14.dr <- abs(diff(C14.r))
+
+	par(mar=c(4,4.5,1,1), mgp=c(2.5,1,0))
+	
+	plot(df$data$BY_ref_bck, df$data$C14_ref,las=1, 
+	     xlim=BY.r+c(-0.05,0)*BY.dr,
+	     ylim=C14.r+c(-0.02,0.02)*C14.dr,
+	     type='n', xlab="Reference/Birth Year",
+	     ylab=expression(Delta^14*C~"(\u2030)"))
+	points(df$data$BY_ref_bck, df$data$C14_ref,
+	       pch=21,bg='gray90',col='gray30')
+	lines(df$data$BY_pred_bck,pred.q[2,],lwd=3)
+	lines(df$data$BY_pred_bck,pred.q[1,], 
+	      lty=3,lwd=2)
+	lines(df$data$BY_pred_bck,pred.q[3,], 
+	      lty=3,lwd=2)
+
 	peak <- df$data$BY_pred_bck[which.max(pred.q[2,])]
 
 	peak_frac <- (par('usr')[2]-peak)/diff(par('usr')[1:2])
@@ -75,29 +98,7 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 	yhigh.adj <- ylow.adj + 0.125
 	sig.y <- ylow + 0.18
 	adj.y <- ylow.adj + 0.18
-
 	
-	C14.r <- range(df$data$C14_ref)
-	
-	BY.dr <- abs(diff(BY.r))
-	C14.dr <- abs(diff(C14.r))
-
-	par(mar=c(4,4.5,1,1), mgp=c(2.5,1,0))
-	
-	plot(df$data$BY_ref_bck, df$data$C14_ref,las=1, 
-	     xlim=BY.r+c(-0.05,0)*BY.dr,
-	     ylim=C14.r+c(-0.1,0)*C14.dr,
-	     type='n', xlab="Reference/Birth Year",
-	     ylab=expression(Delta^14*C~"(\u2030)"))
-
-	lines(df$data$BY_pred_bck,pred.q[2,],lwd=3)
-	lines(df$data$BY_pred_bck,pred.q[1,], 
-	      lty=3,lwd=2,col='gray50')
-	lines(df$data$BY_pred_bck,pred.q[3,], 
-	      lty=3,lwd=2,col='gray50')
-
-	points(df$data$BY_ref_bck, df$data$C14_ref,
-	       pch=21,bg='gray90',col='gray30')
 	if(bias_flag){
 		points(df$data$BY_obs_bck, df$data$C14_obs, 
        	pch=21,bg='firebrick4',col='firebrick1')
@@ -140,20 +141,24 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 		max_sig_ref <- d.sigE$d$x[which.max(d.sigE$d$y)]
 		if(!bias_flag){
 			text(max_sig_ref,
-		     par.it(sig.y,2),
-		     expression(sigma[REF]),cex=2,font=2)
+			     par.it(sig.y,2),
+			     expression(sigma[REF]),
+			     cex=2,font=2)
 		}
-		axis(1,at=d.sigE$ax$p,d.sigE$ax$v,
-			     pos=min(d.sigE$d$y),tck=-0.0075,mgp=c(3,0.05,0),
-			     cex.axis=0.6)
+		axis(1, at = d.sigE$ax$p,
+		     labels = d.sigE$ax$v,
+		     pos = min(d.sigE$d$y),
+		     tck = -0.0075,mgp = c(3,0.05,0),
+		     cex.axis = 0.6)
 		if(bias_flag){
 			d.sigE <- den.sc(ext$sigma_obs,
 		                  to.x=par.it(c(xlow,xhigh),1),
 		                  to.y=par.it(c(ylow,yhigh),2),
-		                  adj=2, from=sigE.r,
+		                  adj=2, from = sigE.r,
 		                  probs=probs)
 			polygon(x=c(d.sigE$d$x,rev(d.sigE$d$x)),
-			        y=c(rep(min(d.sigE$d$y),length(d.sigE$d$y)),
+			        y=c(rep(min(d.sigE$d$y),
+			                length(d.sigE$d$y)),
 			            rev(d.sigE$d$y)),
 			        col=col2rgbA('orange',0.5),
 			        border='darkorange4',lwd=2)

@@ -41,17 +41,14 @@
 #' }
 
 est_model <- function(data, save_dir, ...){
-	if(data$flag == 'reference-only'){
-		mod <- get_stan_model('ref-only')
-	}else if(data$flag == 'integrated'){
-		mod <- get_stan_model('integrated')
-	}
+	mod <- get_stan_model(model_name = data$model,
+		                  model_flag = data$flag)
 	fitting_successful <- FALSE
-	bspline_fit <- list()
-	bspline_fit$model <- mod$load_model[[1]]()
+	model_fit <- list()
+	model_fit$model <- mod$load_model[[1]]()
 	fit <- tryCatch(
 		{
-		  fit <- bspline_fit$model$sample(data = data$data,...)
+		  fit <- model_fit$model$sample(data = data$data,...)
 		  if(length(fit$warnings) == 0) {
 		    fitting_successful <- TRUE
 		  }else{
@@ -84,11 +81,11 @@ est_model <- function(data, save_dir, ...){
 		}
 	)
 	if(fitting_successful){
-		bspline_fit$fitted <- fit
+		model_fit$fitted <- fit
 	}
 	if(!missing(save_dir) & fitting_successful){
-		bspline_fit$save_output_files(dir=save_dir)
+		model_fit$save_output_files(dir=save_dir)
 	}
-	return(bspline_fit)
+	return(model_fit)
 }
 	
