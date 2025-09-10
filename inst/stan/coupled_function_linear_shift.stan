@@ -16,6 +16,7 @@ data{
 	vector[2] sigmaN_prior;
 	vector[2] sigma_ref_prior;
 	vector[2] sigma_obs_prior;
+	vector[2] adj_prior;
 }
 parameters{
 	real lambda; //pre-bomb delta 14C
@@ -49,6 +50,7 @@ model{
 		sigmaN ~ normal(sigmaN_prior[1],sigmaN_prior[2]);
 		sigma_ref ~ normal(sigma_ref_prior[1],sigma_ref_prior[2]);
 		sigma_obs ~ normal(sigma_obs_prior[1],sigma_obs_prior[2]);
+		adj ~ normal(adj_prior[1], adj_prior[2]);
 	//model
 		target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference
 		target += normal_lpdf(C14_obs|C14_obs_hat, sigma_obs); //observations

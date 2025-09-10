@@ -7,8 +7,10 @@
 #' @param model [character] of 'exponential','linear','bspline'; defaults to bspline
 #' @param ll_wt weighting value of the reference series relative to the sample values for the integrated method, default is 5 (tested to be sufficient unless there is many samples).
 #' @param pred.by a vector of formation years or a named list object for predicting the reference series ∆14C at. The named list needs: min.by = start year of prediction sequence, max.by = end year of prediction sequence, inc.by = year increment of the prediction sequence.
+#' @param adj_prior a vector of two values specifying a mean and sd of a normal distribution for the bias adjustment prior; only used with df_unk is provided otherwise ignored. Default is NULL which attempts to specify a weakly informative normal prior.
 #' @param bspline.control a named list of B-spline control parameters (see Details)
 #' @details
+#' The weakly informative prior of \strong{adj_prior} is set with a mean of zero and a standard deviation equal to the difference in range of test sample birth years divided by 4.
 #' \itemize{
 #'	\item \strong{knot.min}  minimum number of knots, default is 10.
 #' \item \strong{knot.adj} divisor of the number of observations to set the number of knots, set a default of 4 with number of knots = nrow(df_ref)/knot.adj. Increasing this value decreases the number of knots (more smoothing in the spline).
@@ -37,7 +39,7 @@
 #' #custom BY_pred with sequence function
 #' df <- data_prep(sim_ref, sim_unk, pred.by = list(min.by=1900, max.by=2020, inc.by=0.5))
 
-data_prep <- function(df_ref, df_unk, model = 'bspline', ll_wt = 5, pred.by=list(min.by=1940, max.by=2020, inc.by=1), bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot=NULL, spline.degree = 3, pad.spline=0.01)){
+data_prep <- function(df_ref, df_unk, model = 'bspline', ll_wt = 5, pred.by=list(min.by=1940, max.by=2020, inc.by=1), adj_prior = NULL, bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot=NULL, spline.degree = 3, pad.spline=0.01)){
 	if(any(!c('BY','C14') %in% colnames(df_ref))) stop('Missing BY or C14 named column in df_ref, check column names')
 	if(any(is.na(df_ref[,c('BY','C14')]))){
 		df_ref <- na.omit(df_ref[,c('BY','C14')])
@@ -99,6 +101,11 @@ data_prep <- function(df_ref, df_unk, model = 'bspline', ll_wt = 5, pred.by=list
 			v$data$C14_obs <- df_unk$C14 #measured ∆14C
 			v$data$wt <- ll_wt #weight
 			v$flag <- 'integrated'
+			if(!is.null(adj_prior)){
+				v$data$adj_prior <- adj_prior
+			}else{
+				v$data$adj_prior <- c(0,diff(range(v$data$BY_obs))/4)
+			}
 		}
 	}else{
 		message('No values provided in df_unk, skipping validation and estimating reference series only')

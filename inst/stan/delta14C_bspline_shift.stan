@@ -40,6 +40,8 @@ data {
 	array[Nobs] real BY_obs; //Birth year from observed points
 	//for predictions
 	array[Np] real BY_pred; //Birth year to predict to
+
+	vector[2] adj_prior;
 }
 transformed data {
 	int num_basis = Nk + spline_degree - 1; // total number of B-splines
@@ -87,6 +89,7 @@ model {
 	tau ~ std_normal();
 	sigma_ref ~ std_normal();
 	sigma_obs ~ std_normal();
+	adj ~ normal(adj_prior[1], adj_prior[2]);
 
 	//local calc
 	target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference

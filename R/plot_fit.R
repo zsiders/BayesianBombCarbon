@@ -7,6 +7,7 @@
 #' @param probs vector of three probabilities for lower CI, centrality, upper CI
 #' @param post.den logical flag to plot posterior densities of certain parameters
 #' @param legend logical flag to plot legend
+#' @param inset.control a list with values of width (width of the inset posterior in proportions of xlim), height (height of the inset posterior in proportions of ylim), sig_low (lower position of sigma posterior in proportions of ylim), adj_low (lower position of BY_adj posterior in proportions of ylim), xbump (translation of posteriors along x-axis in proportions of xlim).
 #' 
 #' @return figure only, invisible
 #' 
@@ -33,7 +34,7 @@
 #' plot_fit(df_int, draws_int)
 #' }
 #' 
-plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE, min.BY, max.BY){
+plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE, min.BY, max.BY, inset.control = list(width = 0.003, height = 0.125, sig_low = 0.3, adj_low = 0.05, xbump = 0, lab_adj = 0.18)){
 	bias_flag <- df$flag == 'integrated'
 	pred.q <- apply(ext$C14_pred, 2, quantile, probs=probs)
 	if(bias_flag) obs.q <- apply(ext$BY_adj, 2, quantile, probs=probs)+df$data$BY_mu
@@ -55,9 +56,6 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 		BY.r[2] <- max.BY
 	}
 
-	
-
-	
 	C14.r <- range(c(df$data$C14_ref, df$data$C14_obs))
 	
 	BY.dr <- abs(diff(BY.r))
@@ -84,20 +82,20 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 
 	#bump post.den
 	if(peak_frac < 0.8){
-		xlow <- peak_frac-0.2
-		ylow <- 0.4
-		ylow.adj <- 0.1
+		xlow <- peak_frac-0.2 + inset.control$xbump
+		ylow <- inset.control$sig_low
+		ylow.adj <- inset.control$adj_low
 		legend.loc <- 'topright'
 	}else{
 		xlow <- 0.1
 		ylow <- 0.75
 		legend.loc <- 'bottomright'
 	}
-	xhigh <- xlow + 0.003 * diff(par('usr')[1:2])
-	yhigh <- ylow + 0.125
-	yhigh.adj <- ylow.adj + 0.125
-	sig.y <- ylow + 0.18
-	adj.y <- ylow.adj + 0.18
+	xhigh <- xlow + inset.control$width * diff(par('usr')[1:2]) + inset.control$xbump
+	yhigh <- ylow + inset.control$height
+	yhigh.adj <- ylow.adj + inset.control$height
+	sig.y <- ylow + inset.control$lab_adj
+	adj.y <- ylow.adj + inset.control$lab_adj
 	
 	if(bias_flag){
 		points(df$data$BY_obs_bck, df$data$C14_obs, 
