@@ -11,7 +11,9 @@ plot_fit(
   post.den = TRUE,
   legend = TRUE,
   min.BY,
-  max.BY
+  max.BY,
+  inset.control = list(width = 0.003, height = 0.125, sig_low = 0.3, adj_low = 0.05,
+    xbump = 0, lab_adj = 0.18)
 )
 }
 \arguments{
@@ -24,6 +26,8 @@ plot_fit(
 \item{post.den}{logical flag to plot posterior densities of certain parameters}
 
 \item{legend}{logical flag to plot legend}
+
+\item{inset.control}{a list with values of width (width of the inset posterior in proportions of xlim), height (height of the inset posterior in proportions of ylim), sig_low (lower position of sigma posterior in proportions of ylim), adj_low (lower position of BY_adj posterior in proportions of ylim), xbump (translation of posteriors along x-axis in proportions of xlim).}
 }
 \value{
 figure only, invisible

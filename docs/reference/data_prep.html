@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BayesianBombCarbon</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -72,6 +72,7 @@
 <span>  model <span class="op">=</span> <span class="st">"bspline"</span>,</span>
 <span>  ll_wt <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  pred.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min.by <span class="op">=</span> <span class="fl">1940</span>, max.by <span class="op">=</span> <span class="fl">2020</span>, inc.by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  adj_prior <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bspline.control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>knot.min <span class="op">=</span> <span class="fl">10</span>, knot.adj <span class="op">=</span> <span class="fl">4</span>, fixed.knot <span class="op">=</span> <span class="cn">NULL</span>, spline.degree <span class="op">=</span></span>
 <span>    <span class="fl">3</span>, pad.spline <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -101,6 +102,10 @@
 <dd><p>a vector of formation years or a named list object for predicting the reference series ∆14C at. The named list needs: min.by = start year of prediction sequence, max.by = end year of prediction sequence, inc.by = year increment of the prediction sequence.</p></dd>
 
 
+<dt id="arg-adj-prior">adj_prior<a class="anchor" aria-label="anchor" href="#arg-adj-prior"></a></dt>
+<dd><p>a vector of two values specifying a mean and sd of a normal distribution for the bias adjustment prior; only used with df_unk is provided otherwise ignored. Default is NULL which attempts to specify a weakly informative normal prior.</p></dd>
+
+
 <dt id="arg-bspline-control">bspline.control<a class="anchor" aria-label="anchor" href="#arg-bspline-control"></a></dt>
 <dd><p>a named list of B-spline control parameters (see Details)</p></dd>
 
@@ -112,8 +117,7 @@
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-
-<ul><li><p><strong>knot.min</strong>  minimum number of knots, default is 10.</p></li>
+    <p>The weakly informative prior of <strong>adj_prior</strong> is set with a mean of zero and a standard deviation equal to the difference in range of test sample birth years divided by 4.</p><ul><li><p><strong>knot.min</strong>  minimum number of knots, default is 10.</p></li>
 <li><p><strong>knot.adj</strong> divisor of the number of observations to set the number of knots, set a default of 4 with number of knots = nrow(df_ref)/knot.adj. Increasing this value decreases the number of knots (more smoothing in the spline).</p></li>
 <li><p><strong>fixed.knot</strong> (optional) set number of knots that overrides number of knots = nrow(df_ref)/knot.adj. Must be a integer followed by L to be considered.</p></li>
 <li><p><strong>spline.degree</strong> degree of polynomial spline, set at a default of 3. Must be 0 or greater.</p></li>

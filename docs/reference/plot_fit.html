@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BayesianBombCarbon</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -73,7 +73,9 @@
 <span>  post.den <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">min.BY</span>,</span>
-<span>  <span class="va">max.BY</span></span>
+<span>  <span class="va">max.BY</span>,</span>
+<span>  inset.control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.003</span>, height <span class="op">=</span> <span class="fl">0.125</span>, sig_low <span class="op">=</span> <span class="fl">0.3</span>, adj_low <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>    xbump <span class="op">=</span> <span class="fl">0</span>, lab_adj <span class="op">=</span> <span class="fl">0.18</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,6 +101,10 @@
 
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
 <dd><p>logical flag to plot legend</p></dd>
+
+
+<dt id="arg-inset-control">inset.control<a class="anchor" aria-label="anchor" href="#arg-inset-control"></a></dt>
+<dd><p>a list with values of width (width of the inset posterior in proportions of xlim), height (height of the inset posterior in proportions of ylim), sig_low (lower position of sigma posterior in proportions of ylim), adj_low (lower position of BY_adj posterior in proportions of ylim), xbump (translation of posteriors along x-axis in proportions of xlim).</p></dd>
 
 </dl></div>
     <div id="value">

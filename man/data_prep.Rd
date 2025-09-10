@@ -10,6 +10,7 @@ data_prep(
   model = "bspline",
   ll_wt = 5,
   pred.by = list(min.by = 1940, max.by = 2020, inc.by = 1),
+  adj_prior = NULL,
   bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot = NULL, spline.degree =
     3, pad.spline = 0.01)
 )
@@ -25,6 +26,8 @@ data_prep(
 
 \item{pred.by}{a vector of formation years or a named list object for predicting the reference series ∆14C at. The named list needs: min.by = start year of prediction sequence, max.by = end year of prediction sequence, inc.by = year increment of the prediction sequence.}
 
+\item{adj_prior}{a vector of two values specifying a mean and sd of a normal distribution for the bias adjustment prior; only used with df_unk is provided otherwise ignored. Default is NULL which attempts to specify a weakly informative normal prior.}
+
 \item{bspline.control}{a named list of B-spline control parameters (see Details)}
 }
 \value{
@@ -38,6 +41,7 @@ A named list object containing:
 Forces a standardized format for inputting bomb radidocarbon data into a list object for estimating with 'cmdstanr'
 }
 \details{
+The weakly informative prior of \strong{adj_prior} is set with a mean of zero and a standard deviation equal to the difference in range of test sample birth years divided by 4.
 \itemize{
 \item \strong{knot.min}  minimum number of knots, default is 10.
 \item \strong{knot.adj} divisor of the number of observations to set the number of knots, set a default of 4 with number of knots = nrow(df_ref)/knot.adj. Increasing this value decreases the number of knots (more smoothing in the spline).
