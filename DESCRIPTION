@@ -12,9 +12,13 @@ License: GPL (>= 3)
 URL: https: //github.com/zsiders/BayesianBombCarbon,
     https://zsiders.github.io/BayesianBombCarbon/
 Depends: 
-    cmdstanr,
     R (>= 2.10)
+Imports:
+    cmdstanr
+Remotes:
+    stan-dev/cmdstanr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+SystemRequirements:CmdStan (>=2.30)
