@@ -44,7 +44,7 @@ To prepare a dataset for estimation, we need to provide at least one `data.frame
 df <- data_prep(df_ref = sim_ref)
 #> No values provided in df_unk, skipping validation and estimating reference series only
 ```
-We can also provide further specifications of the knots used in the penalized B-spline with arguments:
+We can also provide further specifications of the knots used in the penalized B-spline with name list with values:
 + `knot.min` - sets the minimum number of knots, default of 10.
 + `knot.adj` - divisor in number of knots = number of reference series data points/knot.adj, default is 4. 
 + `fixed.knot` - integer number of fixed number of knots that overrides `knot.adj` calculation
