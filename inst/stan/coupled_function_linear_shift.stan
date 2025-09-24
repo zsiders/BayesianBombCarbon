@@ -31,14 +31,15 @@ parameters{
 }
 transformed parameters{
 	vector[Nref] C14_ref_hat; //predicted reference
-	vector[Nobs] C14_obs_hat;  //predicted observations
+	vector[Nobs] C14_obsadj_hat;  //predicted observations
 	array[Nobs] real BY_adj; //repeated adjustment
 	BY_adj = to_array_1d(to_vector(BY_obs) + rep_vector(adj,Nobs));
 	for(i in 1:Nref){
 		C14_ref_hat[i] = lambda+kappa *normal_cdf(BY_ref[i] | mu, sigmaN) + (gamma*(mu-BY_ref[i]))*normal_cdf(BY_ref[i] | mu, sigmaN);
 	}
 	for(i in 1:Nobs){
-		C14_obs_hat[i] = lambda+kappa *normal_cdf(BY_adj[i] | mu, sigmaN) + (gamma*(mu-BY_adj[i]))*normal_cdf(BY_adj[i] | mu, sigmaN);
+		C14_obs_hat[i] = lambda+kappa *normal_cdf(BY_obs[i] | mu, sigmaN) + (gamma*(mu-BY_obs[i]))*normal_cdf(BY_obs[i] | mu, sigmaN);
+		C14_obsadj_hat[i] = lambda+kappa *normal_cdf(BY_adj[i] | mu, sigmaN) + (gamma*(mu-BY_adj[i]))*normal_cdf(BY_adj[i] | mu, sigmaN);
 	}
 }
 model{
@@ -53,11 +54,12 @@ model{
 		adj ~ normal(adj_prior[1], adj_prior[2]);
 	//model
 		target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference
-		target += normal_lpdf(C14_obs|C14_obs_hat, sigma_obs); //observations
+		target += normal_lpdf(C14_obs|C14_obsadj_hat, sigma_obs); //observations
 }
 generated quantities{
 	vector[Nref] log_lik_ref;
 	vector[Nobs] log_lik_obs;
+	vector[Nobs] log_lik_obs_adj;
 	vector[Np] C14_pred; //predicted C14 including variablity
 	vector[Np] C14_pred_hat; //predicted mean C14
 
@@ -67,6 +69,7 @@ generated quantities{
 	}
 	for(ii in 1:Nobs){
 		log_lik_obs[ii] = normal_lpdf(C14_obs[ii]|C14_obs_hat[ii],sigma_obs);
+		log_lik_obs_adj[ii] = normal_lpdf(C14_obs[ii]|C14_obsadj_hat[ii],sigma_obs);
 	}
 
 	for(i in 1:Np){

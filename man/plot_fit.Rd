@@ -13,7 +13,9 @@ plot_fit(
   min.BY,
   max.BY,
   inset.control = list(width = 0.003, height = 0.125, sig_low = 0.3, adj_low = 0.05,
-    xbump = 0, lab_adj = 0.18)
+    xbump = 0, lab_adj = 0.18),
+  plot_bias = TRUE,
+  legend.lab = c("Ref.", "Obs.")
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ plot_fit(
 \item{legend}{logical flag to plot legend}
 
 \item{inset.control}{a list with values of width (width of the inset posterior in proportions of xlim), height (height of the inset posterior in proportions of ylim), sig_low (lower position of sigma posterior in proportions of ylim), adj_low (lower position of BY_adj posterior in proportions of ylim), xbump (translation of posteriors along x-axis in proportions of xlim).}
+
+\item{plot_bias}{logical flag whether to plot the formation year adjustment (only for models with test samples)}
+
+\item{legend.lab}{labels for the reference and test observations}
 }
 \value{
 figure only, invisible

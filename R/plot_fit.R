@@ -8,6 +8,8 @@
 #' @param post.den logical flag to plot posterior densities of certain parameters
 #' @param legend logical flag to plot legend
 #' @param inset.control a list with values of width (width of the inset posterior in proportions of xlim), height (height of the inset posterior in proportions of ylim), sig_low (lower position of sigma posterior in proportions of ylim), adj_low (lower position of BY_adj posterior in proportions of ylim), xbump (translation of posteriors along x-axis in proportions of xlim).
+#' @param plot_bias logical flag whether to plot the formation year adjustment (only for models with test samples)
+#' @param legend.lab labels for the reference and test observations
 #' 
 #' @return figure only, invisible
 #' 
@@ -34,7 +36,7 @@
 #' plot_fit(df_int, draws_int)
 #' }
 #' 
-plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE, min.BY, max.BY, inset.control = list(width = 0.003, height = 0.125, sig_low = 0.3, adj_low = 0.05, xbump = 0, lab_adj = 0.18)){
+plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE, min.BY, max.BY, inset.control = list(width = 0.003, height = 0.125, sig_low = 0.3, adj_low = 0.05, xbump = 0, lab_adj = 0.18),plot_bias=TRUE,legend.lab = c('Ref.','Obs.')){
 	bias_flag <- df$flag == 'integrated'
 	pred.q <- apply(ext$C14_pred, 2, quantile, probs=probs)
 	if(bias_flag) obs.q <- apply(ext$BY_adj, 2, quantile, probs=probs)+df$data$BY_mu
@@ -100,13 +102,15 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 	if(bias_flag){
 		points(df$data$BY_obs_bck, df$data$C14_obs, 
        	pch=21,bg='firebrick4',col='firebrick1')
-		points(obs.q[2,], df$data$C14_obs, pch="|",
-		       col='firebrick1')
-		segments(y0 = df$data$C14_obs,
-		         y1 = df$data$C14_obs,
-		         x0 = obs.q[1,],
-		         x1 = obs.q[3,],
-		         col='firebrick2')
+		if(plot_bias){
+			points(obs.q[2,], df$data$C14_obs, pch="|",
+			       col='firebrick1')
+			segments(y0 = df$data$C14_obs,
+			         y1 = df$data$C14_obs,
+			         x0 = obs.q[1,],
+			         x1 = obs.q[3,],
+			         col='firebrick2')
+		}
 	}
 	
 	#sigma
@@ -196,7 +200,7 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 		}
 		
 	#Age bias
-		if(bias_flag){
+		if(bias_flag & plot_bias){
 			d.dmu <- den.sc(ext$adj,
 			                  to.x=par.it(c(xlow,xhigh),1),
 			                  to.y=par.it(c(ylow.adj,yhigh.adj),2),
@@ -233,25 +237,36 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 			
 		}
 	# Age bias multi
-		if(bias_flag & legend){
+		if(bias_flag & legend & plot_bias){
 			legend(legend.loc,
 		       legend=c(expression(tilde(y)[REF]),
 		                expression(paste('90% CI',phantom()[REF])),
 		                expression(tilde(y)[OBS]),
 		                expression(paste('90% CI',phantom()[OBS])),
-		                'Ref.',
-		                'Obs.'), 
+		                legend.lab[1],
+		                legend.lab[2]), 
 		       bty='n',lty=c(1,3,NA,1,NA,NA), lwd=3, 
 		       pch=c(NA,NA,3,NA,21,21), y.intersp=1,
 		       col=c('black','gray50','firebrick4',
 		             'firebrick1','gray50','firebrick1'),
 		       pt.bg=c(NA,NA,'firebrick1',NA,'gray90','firebrick4'), 
 		       pt.lwd=1, pt.cex=2)
+		}else if(legend & bias_flag){
+			legend(legend.loc,
+		       legend=c(expression(tilde(y)[REF]),
+		                expression(paste('90% CI',phantom()[REF])),
+		                legend.lab[1],
+		                legend.lab[2]), 
+		       bty='n',lty=c(1,3,NA,NA), lwd=3, 
+		       pch=c(NA,NA,21,21), y.intersp=1,
+		       col=c('black','gray50','gray50','firebrick1'),
+		       pt.bg=c(NA,NA,'gray90','firebrick4'), 
+		       pt.lwd=1, pt.cex=2)
 		}else if(legend){
 			legend(legend.loc,
 		       legend=c(expression(tilde(y)[REF]),
 		                expression(paste('90% CI',phantom()[REF])),
-		                'Ref.'), 
+		                legend.lab[1]), 
 		       bty='n',lty=c(1,3,NA), lwd=3, 
 		       pch=c(NA,NA,21), y.intersp=1,
 		       col=c('black','gray50','gray50'),
