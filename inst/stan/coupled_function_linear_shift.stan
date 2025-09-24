@@ -31,6 +31,7 @@ parameters{
 }
 transformed parameters{
 	vector[Nref] C14_ref_hat; //predicted reference
+	vector[Nobs] C14_obs_hat;  //predicted observations
 	vector[Nobs] C14_obsadj_hat;  //predicted observations
 	array[Nobs] real BY_adj; //repeated adjustment
 	BY_adj = to_array_1d(to_vector(BY_obs) + rep_vector(adj,Nobs));
