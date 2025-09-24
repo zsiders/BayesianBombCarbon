@@ -4,12 +4,18 @@
 \alias{extract_draws}
 \title{Function for extracting Bayesian B-spline posteriors}
 \usage{
-extract_draws(fit, df)
+extract_draws(
+  fit,
+  df,
+  pars = c("adj", "sigma_ref", "sigma_obs", "tau", "C14_pred")
+)
 }
 \arguments{
 \item{fit}{cmdstan fit object of a Bayesian B-spline model}
 
 \item{df}{data prepared using the data_prep function used to fit the model}
+
+\item{pars}{list of parameters to extract. defaults to c('adj','sigma_ref','sigma_obs','tau','C14_pred')}
 }
 \value{
 a list containing draws_matrix of posterior draws for parameters of interest; parameters return depend on the model fit

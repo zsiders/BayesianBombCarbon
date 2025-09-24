@@ -3,6 +3,7 @@
 #' @description wrapper function for extracting posterior samples from the Bayesian B-spline model
 #' @param fit cmdstan fit object of a Bayesian B-spline model
 #' @param df data prepared using the data_prep function used to fit the model
+#' @param pars list of parameters to extract. defaults to c('adj','sigma_ref','sigma_obs','tau','C14_pred')
 #' 
 #' @return a list containing draws_matrix of posterior draws for parameters of interest; parameters return depend on the model fit
  
@@ -18,9 +19,9 @@
 #' #extract draws
 #' draws <- extract_draws(fit)
 #' 
-extract_draws <- function(fit, df){
+extract_draws <- function(fit, df, pars = c('adj','sigma_ref','sigma_obs','tau','C14_pred')){
 	fit_vars <- unique(gsub("\\[[[:digit:]]+\\]|\\[[[:digit:]]+\\,[[:digit:]]+\\]","",fit$fitted$metadata()$variables))
-	pars <- c('adj','sigma_ref','sigma_obs','tau','C14_pred')[c('adj','sigma_ref','sigma_obs','tau','C14_pred') %in% fit_vars]
+	pars <- pars[pars %in% fit_vars]
 	bspline_ext <- extract(fit = fit$fitted,
                            pars = pars)
 	if('adj' %in% pars & !missing(df)){
