@@ -1,6 +1,6 @@
 Package: BayesianBombCarbon
 Title: Estimate Bayesian Bomb Radiocarbon Models
-Version: 2.1.0
+Version: 2.1.1
 Authors@R: 
     person("Zachary", "Siders", , "zsiders@ufl.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0798-9515"))
@@ -21,4 +21,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-SystemRequirements:CmdStan (>=2.30)
+SystemRequirements: CmdStan (>=2.30)
