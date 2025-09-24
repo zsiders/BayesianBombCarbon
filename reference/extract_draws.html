@@ -41,7 +41,11 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_draws</span><span class="op">(</span><span class="va">fit</span>, <span class="va">df</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_draws</span><span class="op">(</span></span>
+<span>  <span class="va">fit</span>,</span>
+<span>  <span class="va">df</span>,</span>
+<span>  pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"adj"</span>, <span class="st">"sigma_ref"</span>, <span class="st">"sigma_obs"</span>, <span class="st">"tau"</span>, <span class="st">"C14_pred"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -54,6 +58,10 @@
 
 <dt id="arg-df">df<a class="anchor" aria-label="anchor" href="#arg-df"></a></dt>
 <dd><p>data prepared using the data_prep function used to fit the model</p></dd>
+
+
+<dt id="arg-pars">pars<a class="anchor" aria-label="anchor" href="#arg-pars"></a></dt>
+<dd><p>list of parameters to extract. defaults to c('adj','sigma_ref','sigma_obs','tau','C14_pred')</p></dd>
 
 </dl></div>
     <div class="section level2">
