@@ -8,6 +8,8 @@ data_prep(
   df_ref,
   df_unk,
   model = "bspline",
+  likelihood = "normal",
+  coupled_function = "exponential",
   ll_wt = 5,
   pred.by = list(min.by = 1940, max.by = 2020, inc.by = 1),
   adj_prior = NULL,
@@ -20,7 +22,11 @@ data_prep(
 
 \item{df_unk}{a data.frame with two named columns for samples with unknown true birth year; 1) BY - vector of estimated formation (birth) years; 2) C14 - vector of ∆14C values of the samples}
 
-\item{model}{\link{character} of 'exponential','linear','bspline'; defaults to bspline}
+\item{model}{\link{character} of 'coupled_function','bspline'; defaults to bspline}
+
+\item{likelihood}{\link{character} of 'normal','student_t'; defaults to normal}
+
+\item{coupled_function}{\link{character} of 'exponential','linear'; defaults to exponential}
 
 \item{ll_wt}{weighting value of the reference series relative to the sample values for the integrated method, default is 5 (tested to be sufficient unless there is many samples).}
 

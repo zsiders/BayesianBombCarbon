@@ -40,8 +40,8 @@ data {
 	array[Nobs] real BY_obs; //Birth year from observed points
 	//for predictions
 	array[Np] real BY_pred; //Birth year to predict to
-
 	vector[2] adj_prior;
+	int<lower=0, upper = 1> use_t_dist; //0 is gaussian, 1 is student_t
 }
 transformed data {
 	int num_basis = Nk + spline_degree - 1; // total number of B-splines
@@ -61,6 +61,7 @@ parameters {
 	real<lower=0> sigma_ref; //variability of the reference
 	real<lower=0> sigma_obs; //variability of the observations
 	real<lower=0> tau;  
+	real<lower=0> nu; //degrees of freedom for Student T
 	real adj; //birth year adjustment
 }
 transformed parameters {
@@ -95,10 +96,16 @@ model {
 	sigma_ref ~ std_normal();
 	sigma_obs ~ std_normal();
 	adj ~ normal(adj_prior[1], adj_prior[2]);
+	nu ~ gamma(2,0.1);
 
 	//local calc
-	target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference
-	target += normal_lpdf(C14_obs|C14_obsadj_hat, sigma_obs); //observations
+	if(use_t_dist==0){
+		target += normal_lpdf(C14_ref|C14_ref_hat, sigma_ref)*wt; //reference
+		target += normal_lpdf(C14_obs|C14_obsadj_hat, sigma_obs); //observations
+	}else{
+		target += student_t_lpdf(C14_ref|nu, C14_ref_hat, sigma_ref)*wt; //reference
+		target += student_t_lpdf(C14_obs|nu, C14_obsadj_hat, sigma_obs); //observations
+	}
 }
 generated quantities{
 	vector[Nref] log_lik_ref;
@@ -116,14 +123,28 @@ generated quantities{
 		C14_pred_hat = a0*to_vector(BY_pred) + to_vector(a*B_pred);
 	}
 	//likelihood
-	for(ii in 1:Nref){
-		log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
-	}
-	for(ii in 1:Nobs){
-		log_lik_obs[ii] = normal_lpdf(C14_obs[ii]|C14_obs_hat[ii],sigma_obs);
-		log_lik_obs_adj[ii] = normal_lpdf(C14_obs[ii]|C14_obsadj_hat[ii],sigma_obs);
+	if(use_t_dist==0){
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
+		}
+		for(ii in 1:Nobs){
+			log_lik_obs[ii] = normal_lpdf(C14_obs[ii]|C14_obs_hat[ii],sigma_obs);
+			log_lik_obs_adj[ii] = normal_lpdf(C14_obs[ii]|C14_obsadj_hat[ii],sigma_obs);
+		}
+	} else {
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = student_t_lpdf(C14_ref[ii]|nu,C14_ref_hat[ii],sigma_ref);
+		}
+		for(ii in 1:Nobs){
+			log_lik_obs[ii] = student_t_lpdf(C14_obs[ii]|nu, C14_obs_hat[ii],sigma_obs);
+			log_lik_obs_adj[ii] = student_t_lpdf(C14_obs[ii]|nu, C14_obsadj_hat[ii],sigma_obs);
+		}
 	}
 	for(i in 1:Np){
-		C14_pred[i] = normal_rng(C14_pred_hat[i], sigma_ref);
+		if(use_t_dist==0){
+			C14_pred[i] = normal_rng(C14_pred_hat[i], sigma_ref);
+		}else{
+			C14_pred[i] = student_t_rng(nu, C14_pred_hat[i], sigma_ref);
+		}
 	}
 }

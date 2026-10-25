@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BayesianBombCarbon</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,8 @@
 <span>  <span class="va">df_ref</span>,</span>
 <span>  <span class="va">df_unk</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"bspline"</span>,</span>
+<span>  likelihood <span class="op">=</span> <span class="st">"normal"</span>,</span>
+<span>  coupled_function <span class="op">=</span> <span class="st">"exponential"</span>,</span>
 <span>  ll_wt <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  pred.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min.by <span class="op">=</span> <span class="fl">1940</span>, max.by <span class="op">=</span> <span class="fl">2020</span>, inc.by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  adj_prior <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -66,7 +68,15 @@
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a> of 'exponential','linear','bspline'; defaults to bspline</p></dd>
+<dd><p><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a> of 'coupled_function','bspline'; defaults to bspline</p></dd>
+
+
+<dt id="arg-likelihood">likelihood<a class="anchor" aria-label="anchor" href="#arg-likelihood"></a></dt>
+<dd><p><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a> of 'normal','student_t'; defaults to normal</p></dd>
+
+
+<dt id="arg-coupled-function">coupled_function<a class="anchor" aria-label="anchor" href="#arg-coupled-function"></a></dt>
+<dd><p><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a> of 'exponential','linear'; defaults to exponential</p></dd>
 
 
 <dt id="arg-ll-wt">ll_wt<a class="anchor" aria-label="anchor" href="#arg-ll-wt"></a></dt>

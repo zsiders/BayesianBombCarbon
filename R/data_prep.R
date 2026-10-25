@@ -4,7 +4,9 @@
 #' 
 #' @param df_ref a data.frame with two named columns for the reference series data; 1) BY - vector of *known* formation (birth) years of the reference series; 2) C14 - vector of ∆14C values of the reference series
 #' @param df_unk a data.frame with two named columns for samples with unknown true birth year; 1) BY - vector of estimated formation (birth) years; 2) C14 - vector of ∆14C values of the samples
-#' @param model [character] of 'exponential','linear','bspline'; defaults to bspline
+#' @param model [character] of 'coupled_function','bspline'; defaults to bspline
+#' @param likelihood [character] of 'normal','student_t'; defaults to normal
+#' @param coupled_function [character] of 'exponential','linear'; defaults to exponential
 #' @param ll_wt weighting value of the reference series relative to the sample values for the integrated method, default is 5 (tested to be sufficient unless there is many samples).
 #' @param pred.by a vector of formation years or a named list object for predicting the reference series ∆14C at. The named list needs: min.by = start year of prediction sequence, max.by = end year of prediction sequence, inc.by = year increment of the prediction sequence.
 #' @param adj_prior a vector of two values specifying a mean and sd of a normal distribution for the bias adjustment prior; only used with df_unk is provided otherwise ignored. Default is NULL which attempts to specify a weakly informative normal prior.
@@ -39,14 +41,14 @@
 #' #custom BY_pred with sequence function
 #' df <- data_prep(sim_ref, sim_unk, pred.by = list(min.by=1900, max.by=2020, inc.by=0.5))
 
-data_prep <- function(df_ref, df_unk, model = 'bspline', ll_wt = 5, pred.by=list(min.by=1940, max.by=2020, inc.by=1), adj_prior = NULL, bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot=NULL, spline.degree = 3, pad.spline=0.01)){
+data_prep <- function(df_ref, df_unk, model = 'bspline', likelihood='normal', coupled_function='exponential', ll_wt = 5, pred.by=list(min.by=1940, max.by=2020, inc.by=1), adj_prior = NULL, bspline.control = list(knot.min = 10, knot.adj = 4, fixed.knot=NULL, spline.degree = 3, pad.spline=0.01)){
 	if(any(!c('BY','C14') %in% colnames(df_ref))) stop('Missing BY or C14 named column in df_ref, check column names')
 	if(any(is.na(df_ref[,c('BY','C14')]))){
 		df_ref <- na.omit(df_ref[,c('BY','C14')])
 		warning('df_ref contains NAs, using na.omit to remove')
 	}
 	v <- list(flag = NULL, data = NULL, model = model)
-	if(class(v$model)=='try-error') stop('model argument must be one of exponential, linear, or bspline')
+	if(class(v$model)=='try-error') stop('model argument must be one of coupled_function or bspline')
 	v$data <- list(BY_mu = mean(df_ref$BY)) #mean birth year
 	if(is.list(pred.by)){
 		pred_seq <- seq(pred.by$min.by,pred.by$max.by,pred.by$inc.by) #predicted sequence
@@ -85,7 +87,22 @@ data_prep <- function(df_ref, df_unk, model = 'bspline', ll_wt = 5, pred.by=list
 									          length.out = v$data$Nk)
 									))
 		v$data$spline_degree <- pmax(bspline.control$spline.degree,3)
+	}else if(v$model == 'coupled_function'|'exponential'|'linear'){
+		if(v$model != 'coupled_function'){
+			cpfn_type <- match.arg(v$model,c('exponential','linear'))
+			v$model <- 'coupled_function'
+		}else{
+			cpfn_type <- match.arg(coupled_function,c('exponential','linear'))
+		}
+		v$data$exp_or_lin <- switch(cpfn_type,
+										exponential = 1,
+									    linear = 2)
 	}
+	#likelihood matching
+	like_type <- match.arg(likelihood,c('normal','student_t'))
+	v$data$use_t_dist <- switch(like_type,
+									normal = 0,
+								    student_t = 1)
 
 	#validation samples
 	if(!missing(df_unk)){

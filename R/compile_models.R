@@ -23,7 +23,7 @@ get_stan_model <- function(
     package = "BayesianBombCarbon") {
   model_stan <- list()
 
-  modelname <- match.arg(model_name,c('exponential','linear','bspline'))
+  modelname <- match.arg(model_name,c('coupled_function','bspline'))
 
   if (is.null(model_filename)) {
     if (is.null(model_name)) {
@@ -39,12 +39,14 @@ get_stan_model <- function(
       model_filename <- switch(model_name,
                                bspline = "delta14C_bspline.stan",
                                exponential = "coupled_function_exp.stan",
-                               linear = "coupled_function_linear.stan")
+                               linear = "coupled_function_linear.stan",
+                               coupled_function = "coupled_function_gen.stan")
     } else if (model_flag == "integrated") {
       model_filename <- switch(model_name,
                                bspline = "delta14C_bspline_shift.stan",
                                exponential = "coupled_function_exp_shift.stan",
-                               linear = "coupled_function_linear_shift.stan")
+                               linear = "coupled_function_linear_shift.stan",
+                               coupled_function = "coupled_function_gen_shift.stan")
     } else {
       cli::cli_abort(
         paste(
@@ -124,7 +126,8 @@ update_compiled_stanmodel <- function(model_stan, force_recompile = FALSE) {
       include_paths = include_paths_list[[i]],
       dir = dirname(model_path_list[[i]]),
       cpp_options = cpp_options,
-      force_recompile = force_recompile
+      force_recompile = force_recompile,
+      compile_model_methods = TRUE
     ))
   })
 
@@ -151,16 +154,20 @@ update_compiled_stanmodel <- function(model_stan, force_recompile = FALSE) {
 bombcarbon_compile <- function(model = NULL, force_recompile = FALSE, verbose = FALSE) {
   all_models <- c("delta14C_bspline.stan",
                   "delta14C_bspline_shift.stan",
-                  "coupled_function_exp.stan",
-                  "coupled_function_exp_shift.stan",
-                  "coupled_function_linear.stan",
-                  "coupled_function_linear_shift.stan"
+                  # "coupled_function_exp.stan",
+                  # "coupled_function_exp_shift.stan",
+                  # "coupled_function_linear.stan",
+                  # "coupled_function_linear_shift.stan",
+                  "coupled_function_gen.stan",
+                  "coupled_function_gen_shift.stan"
                   )
   if (!is.null(model)) {
     if (model %in% c("ref-only")) {
-      model <- c("delta14C_bspline.stan","coupled_function_exp.stan","coupled_function_linear.stan")
+      model <- c("delta14C_bspline.stan","coupled_function_gen.stan")
+      # ,"coupled_function_exp.stan","coupled_function_linear.stan"
     } else if (model %in% c("integrated")) {
-      model <- c("delta14C_bspline_shift.stan","coupled_function_exp_shift.stan","coupled_function_linear_shift.stan")
+      model <- c("delta14C_bspline_shift.stan","coupled_function_gen_shift.stan")
+      # coupled_function_exp_shift.stan","coupled_function_linear_shift.stan","
     }
     if (!(model %in% all_models)) {
       cli::cli_abort(paste(

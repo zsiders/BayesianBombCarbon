@@ -19,7 +19,7 @@
 #' #extract draws
 #' draws <- extract_draws(fit)
 #' 
-extract_draws <- function(fit, df, pars = c('adj','sigma_ref','sigma_obs','tau','C14_pred')){
+extract_draws <- function(fit, df, pars = c('adj','sigma_ref','sigma_obs','tau','nu','C14_pred')){
 	fit_vars <- unique(gsub("\\[[[:digit:]]+\\]|\\[[[:digit:]]+\\,[[:digit:]]+\\]","",fit$fitted$metadata()$variables))
 	pars <- pars[pars %in% fit_vars]
 	bspline_ext <- extract(fit = fit$fitted,

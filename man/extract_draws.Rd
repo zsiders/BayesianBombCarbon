@@ -7,7 +7,7 @@
 extract_draws(
   fit,
   df,
-  pars = c("adj", "sigma_ref", "sigma_obs", "tau", "C14_pred")
+  pars = c("adj", "sigma_ref", "sigma_obs", "tau", "nu", "C14_pred")
 )
 }
 \arguments{

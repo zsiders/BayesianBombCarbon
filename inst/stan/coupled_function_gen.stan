@@ -1,0 +1,86 @@
+data{
+	int<lower=1> Nref;             // number of data points
+	int<lower=1> Np;			// num of predictions
+	array[Nref] real C14_ref;
+	array[Nref]real BY_ref;
+	array[Np] real BY_pred;
+	vector[2] lambda_prior;
+	vector[2] mu_prior;
+	vector[2] kappa_prior;
+	vector[2] gamma_prior;
+	vector[2] sigmaN_prior;
+	vector[2] sigma_ref_prior;
+	int<lower=1, upper = 2> exp_or_lin; //1 is exp; 2 is lin
+	int<lower=0, upper = 1> use_t_dist; //0 is gaussian, 1 is student_t
+}
+parameters{
+	real lambda; //pre-bomb delta 14C
+	real<lower=0> kappa; //asymptote of delta 14C
+	real mu; //peak year of delta 14C
+	real<lower=0> gamma; //exponential decay rate post-peak decline
+	real<lower=0> sigmaN; //Gaussian SD of pulse
+	real<lower=0> sigma_ref; //observation error
+	real<lower=0> nu; //degrees of freedom for Student T
+}
+transformed parameters{
+	real cdf_mu; //mean of the Gaussian CDF
+	vector[Nref] C14_ref_hat;
+	cdf_mu = mu+(sigmaN^2)*gamma;
+
+	if(exp_or_lin==1){
+		for(i in 1:Nref){
+			C14_ref_hat[i] = lambda+kappa * exp((mu*gamma)+(sigmaN*gamma)/2) * exp(-gamma*BY_ref[i]) * normal_cdf(BY_ref[i] | cdf_mu, sigmaN);
+		}
+	}else if(exp_or_lin==2){
+		for(i in 1:Nref){
+			C14_ref_hat[i] = lambda+kappa * normal_cdf(BY_ref[i] | mu, sigmaN) +(gamma*(mu-BY_ref[i]))* normal_cdf(BY_ref[i] | mu, sigmaN);
+		}
+	}
+}
+model{
+	//priors
+		lambda ~ normal(lambda_prior[1],lambda_prior[2]); 
+		mu ~ normal(mu_prior[1],mu_prior[2]);
+		kappa ~ normal(kappa_prior[1],kappa_prior[2]);
+		gamma ~ normal(gamma_prior[1],gamma_prior[2]);
+		sigmaN ~ normal(sigmaN_prior[1],sigmaN_prior[2]);
+		sigma_ref ~ normal(sigma_ref_prior[1],sigma_ref_prior[2]);
+		nu ~ gamma(2,0.1);
+	//model
+		if(use_t_dist==0){
+			C14_ref ~ normal(C14_ref_hat, sigma_ref);
+		} else {
+			C14_ref ~ student_t(nu, C14_ref_hat, sigma_ref);
+		}
+}
+generated quantities{
+	vector[Nref] log_lik_ref;
+	vector[Np] C14_pred;
+	vector[Np] C14_pred_hat;
+
+	//likelihood
+	if(use_t_dist==0){
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
+		}
+	} else {
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = student_t_lpdf(C14_ref[ii]|nu,C14_ref_hat[ii],sigma_ref);
+		}
+	}
+
+	//predictions
+	
+	for(ii in 1:Np){
+		if(exp_or_lin==1){
+			C14_pred_hat[ii] = lambda+kappa * exp((mu*gamma)+(sigmaN*gamma)/2) * exp(-gamma*BY_pred[ii]) * normal_cdf(BY_pred[ii] | cdf_mu, sigmaN);
+		}else if(exp_or_lin==2){
+			C14_pred_hat[ii] = lambda+kappa * normal_cdf(BY_pred[ii] | mu, sigmaN) +(gamma*(mu-BY_pred[ii]))* normal_cdf(BY_pred[ii] | mu, sigmaN);
+		}
+		if(use_t_dist==0){
+			C14_pred[ii] = normal_rng(C14_pred_hat[ii], sigma_ref);
+		}else{
+			C14_pred[ii] = student_t_rng(nu, C14_pred_hat[ii], sigma_ref);
+		}
+	}
+}

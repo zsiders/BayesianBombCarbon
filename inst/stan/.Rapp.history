@@ -1,0 +1,463 @@
+dat <- data.frame(sst = round(rlnorm(1e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+dat <- cbind(dat,t(rmultinom(10,1,prob=rep(1/htype,htype))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)
+head(dat)
+dat$htype <- factor(apply(dat[1:10,3:7],1,which.max),#
+                    levels = 1:htype)
+summary(dat)
+apply(dat[1:10,3:7],1,which.max)
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype)
+summary(dat)
+dat <- data.frame(sst = round(rlnorm(1e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+dat <- cbind(dat,t(rmultinom(10,1,prob=rep(1/htype,htype))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype)
+summary(dat)
+prop.table(table(dat$draw))
+erf <- ens_random_forests(df = dat,#
+                          var = 'draw',#
+                          covariates = c('sst','htype'),#
+                          header = c('mup','pdraw'),#
+                          save = FALSE)#
+ALEdf <- calc_ALE(erf, save=FALSE)
+?ens_random_forests
+htype <- 5#
+#
+cthk <- floor(runif(htype, 1000, 5000))#
+#
+cttt <- floor(runif(htype, 10, 50))#
+#
+rate <- cttt/cthk#
+#
+df <- data.frame(htype = factor(1:htype),#
+                 hook = cthk,#
+                 turt = cttt,#
+                 rate = rate)#
+#
+dat <- data.frame(sst = round(rlnorm(1e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+dat <- cbind(dat,t(rmultinom(10,1,prob=rep(1/htype,htype))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype)#
+prop.table(table(dat$draw))#
+#
+library(EnsembleRandomForests)#
+#
+erf <- ens_random_forests(df = dat,#
+                          var = 'draw',#
+                          covariates = c('sst','htype'),#
+                          header = c('mup','pdraw'),#
+                          save = FALSE,#
+                          ntree = 500)#
+ALEdf <- calc_ALE(erf, save=FALSE)
+names(erf)
+?ens_random_forests
+erf_impt(erf)
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])
+head(dat)
+beta
+boxplots(mup~htype,data=dat)
+boxplot(mup~htype,data=dat)
+table(dat$htype)
+dat <- data.frame(sst = round(rlnorm(1e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+dat <- cbind(dat,t(rmultinom(10,1,prob=rep(1/htype,htype))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])
+summary(dat)
+dat <- data.frame(sst = round(rlnorm(1e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+dat <- cbind(dat,t(rmultinom(nrow(dat),1,prob=rep(1/htype,htype))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:7],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])
+boxplot(mup~htype,data=dat)
+beta
+erf <- ens_random_forests(df = dat,#
+                          var = 'draw',#
+                          covariates = c('sst','htype'),#
+                          header = c('mup','pdraw'),#
+                          save = FALSE,#
+                          ntree = 500)
+erf_impt(erf)
+ALEdf <- calc_ALE(erf, save=FALSE)
+?ALEdf
+?calc_ALE
+plot_ALE(ALE_df[1])
+plot_ALE(ALEdf[1])
+names(erf)
+head(erf$ens.pred)
+boxplot(erf$ens.pred$'P.1',erf$data$htype)
+boxplot(erf$data$htype,erf$ens.pred$'P.1')
+head(erf$data)
+boxplot(erf$data$htype,erf$ens.pred[,2])
+boxplot(dat$htype,erf$ens.pred[,2])
+table(dat$htype)
+?boxplot
+boxplot(erf$ens.pred[,2]~dat$htype)
+str(ALEdf[1])
+rowMeans(ALEdf[[1]]$df[,-1:3])
+ALEdf[[1]]$df[,-1:3]
+ALEdf[[1]]$df[,-c(1:3)]
+rowMeans(ALEdf[[1]]$df[,-c(1:3)])
+plot_ALE(ALEdf[1])
+ALEdf[[1]]$df
+aggregate(erf$ens.pred[,2],by=list(dat$htype),FUN=mean)
+tmp <- aggregate(erf$ens.pred[,2],by=list(dat$htype),FUN=mean)
+tmp$anom <- tmp$x-mean(tmp$x)
+tmp
+tmp <- aggregate(erf$ens.pred[,2],by=list(dat$htype),FUN=median)
+tmp
+tmp$anom <- tmp$x-mean(tmp$x)
+tmp
+tmp$anom <- tmp$x-mean(erf$ens.pred[,2])
+tmp
+edit(calc_ALE)
+edit(ALE_fn)
+tmp <- aggregate(erf$ens.pred[,1:2],by=list(dat$htype),FUN=median)
+tmp
+tmp$anom1 <- tmp$x-mean(erf$ens.pred[,3])
+tmp$anom1 <- tmp[,3]-mean(erf$ens.pred[,3])
+tmp <- aggregate(erf$ens.pred[,1:2],by=list(dat$htype),FUN=median)
+tmp$anom1 <- tmp[,3]-mean(erf$ens.pred[,3])
+tmp
+tmp$anom1 <- tmp[,3]-mean(erf$ens.pred[,2])
+tmp$anom0 <- tmp[,2]-mean(erf$ens.pred[,1])
+tmp
+ALEdf[[1]]$df
+rowMeans(ALEdf[[1]]$df[,-c(1:3)])
+rowMeans(ALEdf[[1]]$df[,-c(1:3)])[order(ALEdf[[1]]$df$x)]
+tmp$ALE <- rowMeans(ALEdf[[1]]$df[,-c(1:3)])[order(ALEdf[[1]]$df$x)]
+head(tmp)
+tmp$sum <- abs(tmp$anom0)+abs(tmp$anom1)
+tmp
+cor(tmp$sum,tmp$ALE)
+edit(calc_ALE)
+edit(ALE_fn)
+X = data.df
+X = erf$data
+head(X)
+X.model <- erf$model[[1]]
+yhat
+yhat <- function(X.model, newdata, type='response'){#
+	if(type=='response'){#
+		as.numeric(predict(X.model, newdata, type=type))#
+	}else{#
+		predict(X.model, newdata, type=type)#
+	}#
+}
+pred.fun = yhat
+head(X)
+length(ALEdf)
+i = 5
+K = 50
+type = 'response'
+J = 5
+N = dim(X)[1]
+d = dim(X)[2]
+droplevels(X[, J])
+X[, J] <- droplevels(X[, J])
+x.count <- as.numeric(table(X[, J]))
+x.prob <- x.count/sum(x.count)
+K <- nlevels(X[, J])
+D.cum <- matrix(0, K, K)
+D <- matrix(0, K, K)
+setdiff(1:d, J)
+vi <- rownames(erf$var.imp)[erf$var.imp$ord]
+vi.ind <- match(vi, colnames(erf$data))
+data.df <- fit$data[c(1, vi.ind)]
+data.df <- erf$data[c(1, vi.ind)]
+X = data.df
+head(X)
+N = dim(X)[1]
+d = dim(X)[2]
+is(X[, J], "factor")
+J = 2
+N = dim(X)[1]
+d = dim(X)[2]
+is(X[, J], "factor")
+X[, J] <- droplevels(X[, J])
+x.count <- as.numeric(table(X[, J]))
+x.prob <- x.count/sum(x.count)
+K <- nlevels(X[, J])
+D.cum <- matrix(0, K, K)
+D <- matrix(0, K, K)
+D
+setdiff(1:d, J)
+j=4
+q.x.all <- quantile(X[, j], probs = seq(0, 1, #
+                  length.out = 100), na.rm = TRUE, names = FALSE)
+x.ecdf = tapply(X[, j], X[, J], ecdf)#
+                for (i in 1:(K - 1)) {#
+                  for (k in (i + 1):K) {#
+                    D[i, k] = max(abs(x.ecdf[[i]](q.x.all) - #
+                      x.ecdf[[k]](q.x.all)))#
+                    D[k, i] = D[i, k]#
+                  }#
+                }#
+                D.cum <- D.cum + D
+D.cum
+D
+D1D <- cmdscale(D.cum, k = 1)
+ind.ord <- sort(D1D, index.return = T)$ix
+ord.ind <- sort(ind.ord, index.return = T)$ix
+levs.orig <- levels(X[, J])
+levs.ord <- levs.orig[ind.ord]
+x.ord <- ord.ind[as.numeric(X[, J])]
+row.ind.plus <- (1:N)[x.ord < K]
+row.ind.neg <- (1:N)[x.ord > 1]
+X.plus <- X
+X.neg <- X
+X.plus[row.ind.plus, J] <- levs.ord[x.ord[row.ind.plus] + #
+            1]
+X.neg[row.ind.neg, J] <- levs.ord[x.ord[row.ind.neg] - #
+            1]
+y.hat <- pred.fun(X.model = X.model, newdata = X, type = type)
+names(X.model)
+X.model <- X.model$mod
+y.hat <- pred.fun(X.model = X.model, newdata = X, type = type)
+row.ind.plus
+x.ord < K
+x.ord
+(1:N)
+ind.ord
+D1D
+D.cum
+ind.ord
+levs.ord
+x.ord < K
+K
+y.hat.plus <- pred.fun(X.model = X.model, newdata = X.plus[row.ind.plus, #
+            ], type = type)
+y.hat.neg <- pred.fun(X.model = X.model, newdata = X.neg[row.ind.neg, #
+            ], type = type)
+Delta.plus <- y.hat.plus - y.hat[row.ind.plus]
+Delta.neg <- y.hat[row.ind.neg] - y.hat.neg
+Delta.plus
+Delta.neg
+Delta <- as.numeric(tapply(c(Delta.plus[, 2], #
+                  Delta.neg[, 2]), c(x.ord[row.ind.plus], x.ord[row.ind.neg] - #
+                  1), mean))
+Delta <- as.numeric(tapply(c(Delta.plus, Delta.neg), #
+                  c(x.ord[row.ind.plus], x.ord[row.ind.neg] - #
+                    1), mean))
+Delta
+cumsum(Delta)
+fJ <- c(0, cumsum(Delta))
+fJ
+x.prob
+x.prob[ind.ord]
+sum(fJ * x.prob[ind.ord])
+fJ
+sum(fJ * x.prob[ind.ord])
+fJ = fJ - sum(fJ * x.prob[ind.ord])
+fJ
+plot_ALE(ALEdf[1])
+names(erf)
+thres.id <- which.max((erf$ens.perf$sens@y.values[[1]] + #
+                         erf$ens.perf$spec@y.values[[1]])-1)
+thres <- erf$ens.perf$sens@x.values[[1]][thres.id]
+thres
+erf$ens.pred$thres <- as.integer(erf$ens.pred$'P.1' > thres)
+head(erf$ens.pred)
+boxplot(erf$ens.pred$thres~dat$htype)
+table(erf$ens.pred$thres,dat$htype)
+prop.table(table(erf$ens.pred$thres,dat$htype),margin=2)
+plot(ALEdf[1])
+plot_ALE(ALEdf[1])
+prop.table(table(erf$ens.pred$thres,dat$htype),margin=2)[1,]
+cor(tmp$ALE,prop.table(table(erf$ens.pred$thres,dat$htype),margin=2)[1,])
+plot_ALE(ALEdf[1])
+cor(tmp$ALE,prop.table(table(erf$ens.pred$thres,dat$htype),margin=2)[2,])
+htype <- 10#
+#
+cthk <- floor(runif(htype, 1000, 5000))#
+#
+cttt <- floor(runif(htype, 10, 50))#
+#
+rate <- cttt/cthk#
+#
+df <- data.frame(htype = factor(1:htype),#
+                 hook = cthk,#
+                 turt = cttt,#
+                 rate = rate)
+3:(3+htype-1)
+dat <- data.frame(sst = round(rlnorm(4e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+probs <- runif(htype,0,1)#
+dat <- cbind(dat,t(rmultinom(nrow(dat),1,prob=probs/sum(probs))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:(3+htype-1)],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])#
+prop.table(table(dat$draw))
+boxplot(mup~htype,data=dat)
+erf2 <- ens_random_forests(df = dat,#
+                          var = 'draw',#
+                          covariates = c('sst','htype'),#
+                          header = c('mup','pdraw'),#
+                          save = FALSE,#
+                          ntree = 500)
+erf_impt(erf2)
+ALEdf <- calc_ALE(erf2, save=FALSE)#
+plot_ALE(ALEdf[1])#
+#
+thres.id <- which.max((erf2$ens.perf2$sens@y.values[[1]] + #
+                         erf2$ens.perf2$spec@y.values[[1]])-1)#
+# Get the threshold value#
+thres <- erf2$ens.perf$sens@x.values[[1]][thres.id]#
+erf2$ens.pred$thres <- as.integer(erf2$ens.pred$'P.1' > thres)#
+prop.table(table(erf2$ens.pred$thres,dat$htype),margin=2)
+htype <- 10#
+#
+cthk <- floor(runif(htype, 1000, 5000))#
+#
+cttt <- floor(runif(htype, 10, 50))#
+#
+rate <- cttt/cthk#
+#
+df <- data.frame(htype = factor(1:htype),#
+                 hook = cthk,#
+                 turt = cttt,#
+                 rate = rate)#
+#
+dat <- data.frame(sst = round(rlnorm(4e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+probs <- runif(htype,0,1)#
+dat <- cbind(dat,t(rmultinom(nrow(dat),1,prob=probs/sum(probs))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.1)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:(3+htype-1)],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])#
+prop.table(table(dat$draw))#
+boxplot(mup~htype,data=dat)#
+#
+library(EnsembleRandomForests)
+dat <- data.frame(sst = round(rlnorm(4e5,log(17),0.1),2))#
+dat$sstavg <- (dat$sst - mean(dat$sst))/sd(dat$sst)#
+probs <- runif(htype,0,1)#
+dat <- cbind(dat,t(rmultinom(nrow(dat),1,prob=probs/sum(probs))))#
+lnrate <- log(rate)#
+mulnr <- mean(lnrate)#
+beta <- c(lnrate - mulnr, -0.5)#
+#
+dat$mup <- as.matrix(dat[,-1]) %*% beta#
+dat$pdraw <- plogis(rnorm(nrow(dat),dat$mup,sd=0.1))#
+dat$draw <- rbinom(nrow(dat),1,dat$pdraw*0.1)#
+dat$htype <- factor(apply(dat[,3:(3+htype-1)],1,which.max),#
+                    levels = 1:htype,#
+                    labels = LETTERS[1:htype])#
+prop.table(table(dat$draw))#
+boxplot(mup~htype,data=dat)
+erf2 <- ens_random_forests(df = dat,#
+                          var = 'draw',#
+                          covariates = c('sst','htype'),#
+                          header = c('mup','pdraw'),#
+                          save = FALSE,#
+                          ntree = 500)
+erf_impt(erf2)
+ALEdf <- calc_ALE(erf2, save=FALSE)
+plot_ALE(ALEdf[1])
+thres.id <- which.max((erf2$ens.perf2$sens@y.values[[1]] + #
+                         erf2$ens.perf2$spec@y.values[[1]])-1)
+thres.id <- which.max((erf2$ens.perf$sens@y.values[[1]] + #
+                         erf2$ens.perf$spec@y.values[[1]])-1)
+thres <- erf2$ens.perf$sens@x.values[[1]][thres.id]
+erf2$ens.pred$thres <- as.integer(erf2$ens.pred$'P.1' > thres)
+prop.table(table(erf2$ens.pred$thres,dat$htype),margin=2)
+plot_ALE(ALEdf[1])
+tab <- prop.table(table(erf2$ens.pred$thres,dat$htype),margin=2)
+tab_anom <- apply(tab,1,function(x)x-mean(x))
+tab_anom
+plot_ALE(ALEdf[1])
+points(1:nrow(tab_anom),tab_anom[,1],col='red')
+points(1:nrow(tab_anom),tab_anom[,1],col='red', pch=16, cex=1.2)
+points(1:nrow(tab_anom),tab_anom[,2],col='blue', pch=16, cex=1.2)
+cor(tab[2,],rowMeans(ALEdf[[1]]$df[,-c(1:3)]))
+ALEdf[[1]]$df
+cor(tab[2,],rowMeans(ALEdf[[1]]$df[order(ALEdf[[1]]$df$x),-c(1:3)]))
+ALEagg <- data.frame(htype = sort(ALEdf[[1]]$df$x),#
+                     rawALE = rowMeans(ALEdf[[1]]$df[order(ALEdf[[1]]$df$x),-c(1:3)])#
+                     )
+prop.table(dat$htype)
+prop.table(table(dat$htype))
+apply(ALEdf[[1]]$df[order(ALEdf[[1]]$df$x),-c(1:3)],2,function(x)x*prop.table(table(dat$htype)))
+rowMeans(apply(ALEdf[[1]]$df[order(ALEdf[[1]]$df$x),-c(1:3)],2,function(x)x*prop.table(table(dat$htype))))
+ALEagg$wtALE <- rowMeans(apply(ALEdf[[1]]$df[order(ALEdf[[1]]$df$x),-c(1:3)],2,function(x)x*prop.table(table(dat$htype))))
+ALEagg$true <- tab[2,]
+ALEagg
+cor(ALEagg[,-1])
+library(cmdstanr)
+install_cmdstan()
+cmdstan_make_local(cpp_options = cmdstan_make_local(dir = "/Users/zach/.cmdstan/cmdstan-2.36.0"))#
+rebuild_cmdstan(cores = 4)
+setwd("/Users/zach/Dropbox (Personal)/Projects/BayesianBombCarbon/inst/stan")
+test <- cmdstan_model(stan_file="./coupled_function_exp.stan")
+test <- cmdstan_model(stan_file="./coupled_function_linear.stan")
+test <- cmdstan_model(stan_file="./coupled_function_gen.stan")
+test <- cmdstan_model(stan_file="./coupled_function_exp_shift.stan")
+test <- cmdstan_model(stan_file="./coupled_function_linear_shift.stan")
+test <- cmdstan_model(stan_file="./coupled_function_gen_shift.stan")
+test <- cmdstan_model(stan_file="./coupled_function_gen_shift.stan")
+test <- cmdstan_model(stan_file="./delta14C_bspline.stan")
+test <- cmdstan_model(stan_file="./delta14C_bspline_shift.stan")
+?match.arg
+my_func <- function(mode = c("fast", "thorough", "replicated")) {#
+  mode <- match.arg(mode)#
+  return(mode)#
+}
+my_fun
+my_func(v)
+my_func("v")

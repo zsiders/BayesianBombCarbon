@@ -10,6 +10,7 @@ data{
 	vector[2] gamma_prior;
 	vector[2] sigmaN_prior;
 	vector[2] sigma_ref_prior;
+	int<lower=0, upper = 1> use_t_dist; //0 is gaussian, 1 is student_t
 }
 parameters{
 	real lambda; //pre-bomb delta 14C
@@ -18,6 +19,7 @@ parameters{
 	real<lower=0> gamma; //exponential decay rate post-peak decline
 	real<lower=0> sigmaN; //Gaussian SD of pulse
 	real<lower=0> sigma_ref; //observation error
+	real<lower=0> nu; //degrees of freedom for Student T
 }
 transformed parameters{
 	vector[Nref] C14_ref_hat;
@@ -35,8 +37,13 @@ model{
 		gamma ~ normal(gamma_prior[1],gamma_prior[2]);
 		sigmaN ~ normal(sigmaN_prior[1],sigmaN_prior[2]);
 		sigma_ref ~ normal(sigma_ref_prior[1],sigma_ref_prior[2]);
+		nu ~ gamma(2,0.1);
 	//model
-		C14_ref ~ normal(C14_ref_hat, sigma_ref);
+		if(use_t_dist==0){
+			C14_ref ~ normal(C14_ref_hat, sigma_ref);
+		} else {
+			C14_ref ~ student_t(nu, C14_ref_hat, sigma_ref);
+		}
 }
 generated quantities{
 	vector[Nref] log_lik_ref;
@@ -44,13 +51,23 @@ generated quantities{
 	vector[Np] C14_pred_hat;
 
 	//likelihood
-	for(ii in 1:Nref){
-		log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
+	if(use_t_dist==0){
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = normal_lpdf(C14_ref[ii]|C14_ref_hat[ii],sigma_ref);
+		}
+	} else {
+		for(ii in 1:Nref){
+			log_lik_ref[ii] = student_t_lpdf(C14_ref[ii]|nu,C14_ref_hat[ii],sigma_ref);
+		}
 	}
 
 	//predictions
 	for(ii in 1:Np){
 		C14_pred_hat[ii] = lambda+kappa * normal_cdf(BY_pred[ii] | mu, sigmaN) +(gamma*(mu-BY_pred[ii]))* normal_cdf(BY_pred[ii] | mu, sigmaN);
-		C14_pred[ii] = normal_rng(C14_pred_hat[ii], sigma_ref);
+		if(use_t_dist==0){
+			C14_pred[ii] = normal_rng(C14_pred_hat[ii], sigma_ref);
+		}else{
+			C14_pred[ii] = student_t_rng(nu, C14_pred_hat[ii], sigma_ref);
+		}
 	}
 }
