@@ -61,7 +61,7 @@ parameters {
 	real<lower=0> sigma_ref; //variability of the reference
 	real<lower=0> sigma_obs; //variability of the observations
 	real<lower=0> tau;  
-	real<lower=0> nu; //degrees of freedom for Student T
+	real<lower=1> nu; //degrees of freedom for Student T
 	real adj; //birth year adjustment
 }
 transformed parameters {

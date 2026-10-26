@@ -20,7 +20,7 @@ parameters{
 	real<lower=0> gamma; //exponential decay rate post-peak decline
 	real<lower=0> sigmaN; //Gaussian SD of pulse
 	real<lower=0> sigma_ref; //observation error
-	real<lower=0> nu; //degrees of freedom for Student T
+	real<lower=1> nu; //degrees of freedom for Student T
 }
 transformed parameters{
 	real cdf_mu; //mean of the Gaussian CDF

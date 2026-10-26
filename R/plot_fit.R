@@ -91,6 +91,7 @@ plot_fit <- function(df, ext, probs=c(0.05,0.5,0.95),post.den=TRUE, legend=TRUE,
 	}else{
 		xlow <- 0.1
 		ylow <- 0.75
+		ylow.adj <- ylow - 0.25
 		legend.loc <- 'bottomright'
 	}
 	xhigh <- xlow + inset.control$width * diff(par('usr')[1:2]) + inset.control$xbump

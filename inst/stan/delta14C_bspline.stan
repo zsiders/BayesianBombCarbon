@@ -55,7 +55,7 @@ parameters {
 	real a0;  // intercept
 	real<lower=0> sigma_ref; 
 	real<lower=0> tau;
-	real<lower=0> nu; //degrees of freedom for Student T   
+	real<lower=1> nu; //degrees of freedom for Student T   
 }
 transformed parameters {
 	row_vector[num_basis] a;
