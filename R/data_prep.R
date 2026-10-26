@@ -87,7 +87,7 @@ data_prep <- function(df_ref, df_unk, model = 'bspline', likelihood='normal', co
 									          length.out = v$data$Nk)
 									))
 		v$data$spline_degree <- pmax(bspline.control$spline.degree,3)
-	}else if(v$model == 'coupled_function'|'exponential'|'linear'){
+	}else if(v$model %in% c('coupled_function','exponential','linear')){
 		if(v$model != 'coupled_function'){
 			cpfn_type <- match.arg(v$model,c('exponential','linear'))
 			v$model <- 'coupled_function'
